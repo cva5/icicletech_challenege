@@ -11,7 +11,7 @@ class NumberToWordsConverter
     for i in (1..30)
       dictionary[i] = []
     end
-    file_path = "../resources/dictionary.txt"
+    file_path = File.expand_path File.join(File.dirname(__FILE__), '../resources', 'dictionary.txt')
     File.foreach( file_path ) do |word|
       dictionary[word.length] << word.chop.to_s.downcase
     end
@@ -48,3 +48,6 @@ end
 
 final_words = NumberToWordsConverter.new().generate_words("6686787825")
 print final_words
+
+final_words1 = NumberToWordsConverter.new().generate_words("9500743795")
+print final_words1
