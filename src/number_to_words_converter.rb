@@ -13,12 +13,38 @@ class NumberToWordsConverter
     end
     file_path = "../resources/dictionary.txt"
     File.foreach( file_path ) do |word|
-      puts word
       dictionary[word.length] << word.chop.to_s.downcase
     end
 
-    #TODO add code to generate words from given mobile number
+    keys = phone_number.chars.map{|digit|letters[digit]}
 
+    results = {}
+    total_number = keys.length - 1
+
+    for i in (2..total_number - 2)
+      first_array = keys[0..i]
+      next if first_array.length < 3
+      second_array = keys[i + 1..total_number]
+      next if second_array.length < 3
+      first_combination = first_array.shift.product(*first_array).map(&:join) # Get product of arrays #get_combination(first_array, dictionary)#
+      next if first_combination.nil?
+      second_combination = second_array.shift.product(*second_array).map(&:join)
+      next if second_combination.nil?
+      results[i] = [(first_combination & dictionary[i+2]), (second_combination & dictionary[total_number - i +1])] # get common values from arrays
+    end
+
+    final_words = []
+    results.each do |key, combinataions|
+      next if combinataions.first.nil? || combinataions.last.nil?
+      combinataions.first.product(combinataions.last).each do |combo_words|
+        final_words << combo_words
+      end
+    end
+
+    final_words << (keys.shift.product(*keys).map(&:join) & dictionary[11]).join(", ")
+    final_words
   end
-  NumberToWordsConverter.new.generate_words("6686787825")
 end
+
+final_words = NumberToWordsConverter.new().generate_words("6686787825")
+print final_words
